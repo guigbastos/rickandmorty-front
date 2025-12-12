@@ -21,8 +21,7 @@ body {
 }
 
 .home-container > img {
-    margin-bottom: 4rem;
-    max-width: 30rem;
+    
 }
 
 .results-grid {
@@ -53,6 +52,8 @@ body {
     background-color: transparent;
     margin-right: 1.6rem;
     font-family: 'Nunito', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
     padding-left: 1.6rem;
     color: #fff;
 }
@@ -67,5 +68,5 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-top: 7.4rem;
+    padding: 7.4rem 0 10.1rem;
 }

@@ -3,6 +3,8 @@ import "./styles.css"
 import { useState, type ChangeEvent } from "react"
 import { Card } from "../../components/header/Card"
 import Loading from "../../components/Loading"
+import { Pagination } from "../../components/Pagination"
+
 
 interface Character {
   id: number;
@@ -28,6 +30,11 @@ interface Character {
 
 interface CharacterResponse {
   data: Character[];
+  meta: {
+    total_pages: number;
+    current_page: number;
+    total_items: number;
+  }
 }
 
 export const Home: React.FC = () => {
@@ -36,22 +43,33 @@ export const Home: React.FC = () => {
   const [hasResults, setHasResults] = useState(false);
   const [characters, setCharacters] = useState<Character[]>([]);
   const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  
   function onSearchInputChanged(event: ChangeEvent<HTMLInputElement>) {
     setSearchInput(event.target.value);
   }
 
-  async function handleSearch() {
+  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  } 
+
+  async function handleSearch(page: number = 1) {
     if (!searchInput.trim()) return;
 
     setIsLoading(true);
     setHasResults(false);
+
+    setSelectedCardId(null);
+
     setCharacters([]);
 
     try {
       const timerPromise = new Promise(resolve => setTimeout(resolve, 2000));
 
-      const fetchPromise = fetch(`http://localhost:5001/character?name=${searchInput}`)
+      const fetchPromise = fetch(`http://localhost:5001/character?name=${searchInput}&page=${page}`)
         .catch(err => {
           console.error("Erro na API:", err);
           return null;
@@ -61,6 +79,10 @@ export const Home: React.FC = () => {
 
       if (response && response.ok) {
         const data: CharacterResponse = await response.json();
+
+        setCharacters(data.data);
+        setCurrentPage(data.meta.current_page);
+        setTotalPages(data.meta.total_pages);
 
         const filtered = data.data.filter(char => char.name.toLowerCase().includes(searchInput.toLowerCase()));
 
@@ -83,11 +105,11 @@ export const Home: React.FC = () => {
       {isLoading && <Loading />}
       <div className="home-container">
 
-      <img src="./src/assets/logo.svg" alt="" draggable={false}/>
+      <img src="./src/assets/logo.svg" alt="" draggable={false} className="logo"/>
 
       <div className="search-box">
-      <input onChange={onSearchInputChanged} value={searchInput} type="search" className="search-input" placeholder="Search characters" />
-      <div onClick={handleSearch}>
+      <input onChange={onSearchInputChanged} onKeyDown={handleKeyDown} value={searchInput} type="search" className="search-input" placeholder="Search characters" />
+      <div onClick={() => handleSearch(1)}>
         <Button text="Search" link="#"/>
       </div>
       </div>
@@ -112,15 +134,23 @@ export const Home: React.FC = () => {
               />
             ))
           ) : (
-            <p>No results found.</p>
+            <p>Nenhum personagem encontrado.</p>
           )}
         </div>
       )}
 
-      {hasResults && !isLoading && (
+      {characters.length > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={(page) => handleSearch(page)}
+        />
+      )}
+
+      {/* {hasResults && !isLoading && (
         <div style={{marginTop:20, color: 'white'}}>
         </div>
-      )} 
+      )}  */}
       </div>
     </>
   )

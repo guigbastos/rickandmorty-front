@@ -1,0 +1,53 @@
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.2rem;
+    margin-top: 4rem;
+    margin-bottom: 2rem;
+    user-select: none;
+}
+
+.page-button {
+    background: transparent;
+    border: none;
+    color: #9CA3AF;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 400;
+    line-height: 2.7rem;
+    font-size: 2rem;
+    cursor: pointer;
+    width: 3.2rem;
+    height: 3.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.page-button:hover {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.page-button.active {
+    color: #CBD736;
+    font-weight: bold;
+    background-color: transparent;
+    /* text-shadow: 0 0 10px rgba(203, 215, 54, 0.4); */
+}
+
+.arrow-button {
+    font-size: 1.2rem;
+    color: #fff;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0 10px;
+}
+
+.arrow-button:disabled {
+    color: #444;
+    cursor: not-allowed;
+}
