@@ -14,7 +14,7 @@
 }
 
 .card.selected {
-    border-color: #CBD736;
+    border: 4px solid #CBD736;
     /* background-color: rgba(30, 30, 32, 0.9); */
     box-shadow: 0 0 20px rgba(151, 206, 76, 0.6);
     transform: translateY(-5px);

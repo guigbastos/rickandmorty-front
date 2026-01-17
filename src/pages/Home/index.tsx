@@ -4,6 +4,8 @@ import { useState, type ChangeEvent } from "react"
 import { Card } from "../../components/header/Card"
 import Loading from "../../components/Loading"
 import { Pagination } from "../../components/Pagination"
+import { CharacterModal } from "../../components/Modal"
+import type { CharacterData } from "../../types/character"
 
 
 interface Character {
@@ -42,9 +44,10 @@ export const Home: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [hasResults, setHasResults] = useState(false);
   const [characters, setCharacters] = useState<Character[]>([]);
-  const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
+  const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   
   function onSearchInputChanged(event: ChangeEvent<HTMLInputElement>) {
     setSearchInput(event.target.value);
@@ -52,7 +55,7 @@ export const Home: React.FC = () => {
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (event.key === 'Enter') {
-      handleSearch();
+      handleSearch(1);
     }
   } 
 
@@ -62,7 +65,7 @@ export const Home: React.FC = () => {
     setIsLoading(true);
     setHasResults(false);
 
-    setSelectedCardId(null);
+    setSelectedCharacter(null);
 
     setCharacters([]);
 
@@ -90,6 +93,7 @@ export const Home: React.FC = () => {
       } else {
         console.error("Erro na API");
         setCharacters([]);
+        setTotalPages(1);
       }
     } catch (error) {
       console.error("Erro ao buscar:", error);
@@ -100,9 +104,26 @@ export const Home: React.FC = () => {
     }
   }
 
+  function handleCardClick(char: Character) {
+    setSelectedCharacter(char);
+    setIsModalOpen(true);
+  }
+
+  function handleCloseModal() {
+    setIsModalOpen(false);
+    setSelectedCharacter(null);
+  }
+
   return (
     <>
       {isLoading && <Loading />}
+
+      <CharacterModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        characterInfos={selectedCharacter as any}
+      />
+
       <div className="home-container">
 
       <img src="./src/assets/logo.svg" alt="" draggable={false} className="logo"/>
@@ -129,8 +150,9 @@ export const Home: React.FC = () => {
               origin={char.character_origin?.name || "Unknown"}
               location={char.character_location?.name || "Unknown"}
               episode={char.last_episode ? [char.last_episode.name] : []}
-              isSelected={char.id === selectedCardId}
-              onClick={() => setSelectedCardId(char.id)}
+              isSelected={selectedCharacter?.id === char.id}
+              // onClick={() => setSelectedCharacter(char)}
+              onClick={() => handleCardClick(char)}
               />
             ))
           ) : (
