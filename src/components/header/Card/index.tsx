@@ -27,11 +27,14 @@ export const Card: React.FC<CardProps> = ({
     isSelected,
     onClick,
 }: CardProps) => {
+    const isAlive = status === 'Alive';
+
     return (
         <>
         <div className={`card ${isSelected ? 'selected' : ''}`} onClick={onClick}>
             <div className="image-container">
-                <img src={imageUrl} alt={name} draggable={false}/>
+                <img src={imageUrl} alt={name} draggable={false}
+                className={`card-image ${!isAlive ? 'grayscale' : ''}`}/>
             </div>
             <div className="card-info">
                 <h3>{name}</h3>

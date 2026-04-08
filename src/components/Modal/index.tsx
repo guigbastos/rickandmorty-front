@@ -1,65 +1,100 @@
 import React from "react";
-import { ModalOverlay, ModalContent, CloseButton, LeftPanel, ImageContainer, CharacterImage, CharacterInfo, RightPanel, Title, TypeInfo, TextInfo, LocationInfo, ResidentsInfo } from "../../components/Modal/styles.ts"
-import type { CharacterData } from "../../types/character";
+import {
+    ModalOverlay,
+    ModalContent,
+    CloseButton,
+    LeftPanel,
+    CharacterImage,
+    CharacterInfo,
+    RightPanel,
+    SectionBlock,
+    SectionTitle,
+    TypeInfo,
+    LocationName,
+    DimensionInfo,
+    ResidentsInfo,
+    AboutText,
+} from "./styles";
+import type { CharacterData } from "../../types/Character.ts";
 
 interface CharacterModalProps {
     characterInfos: CharacterData;
-    isOpen: boolean
+    isOpen: boolean;
     onClose: () => void;
 }
 
-export const CharacterModal: React.FC<CharacterModalProps> = ({ characterInfos, isOpen, onClose }) => {
-    if (!isOpen) return null;
+export const CharacterModal: React.FC<CharacterModalProps> = ({
+    characterInfos,
+    isOpen,
+    onClose,
+}) => {
+    if (!isOpen || !characterInfos) return null;
+
+    const statusText =
+        characterInfos.status === "Alive"
+            ? "He is alive and well."
+            : characterInfos.status === "Dead"
+            ? "Deceased."
+            : "Life status unknown.";
+
     return (
         <ModalOverlay onClick={onClose}>
             <ModalContent onClick={(e) => e.stopPropagation()}>
                 <CloseButton onClick={onClose}>Close</CloseButton>
-                <LeftPanel>
-                    <ImageContainer>
-                        <div>
-                            <CharacterImage
-                                src={characterInfos.image}
-                                alt={characterInfos.name}
-                            />
-                            <CharacterInfo>
-                                <h3>{characterInfos.name}</h3>
-                                <p>{characterInfos.species}</p>
-                            </CharacterInfo>
-                        </div>
-                    </ImageContainer>
-                </LeftPanel>
-                <RightPanel>
-                    <div>
-                        <Title>ABOUT</Title>
-                        <TextInfo>
-                            {characterInfos.name} is a {" "}
-                            {characterInfos.gender?.toLowerCase()}{" "}
-                            {characterInfos.species?.toLowerCase()}{". "}
-                            {characterInfos.status === "Alive" ? "He is alive and well." : characterInfos.status === "Dead" ? "Dead." : "Unknown life status."}
-                            {characterInfos.latest_air_date && (<> Last seen in {characterInfos.latest_air_date}.</>)}
-                        </TextInfo>
-                    </div>
-                    <div>
-                        <Title>ORIGIN</Title>
-                        <TypeInfo>{characterInfos.origin?.type || "Unknown"}</TypeInfo>
-                        <LocationInfo>{characterInfos.origin?.name || "Unknown"}</LocationInfo>
-                        <TextInfo>{characterInfos.origin?.dimension || "Unkown"}</TextInfo>
-                        <ResidentsInfo>
-                            {characterInfos.origin?.residents_count ?? "N/A"} Residents
-                        </ResidentsInfo>
-                    </div>
 
-                    <div>
-                        <Title>LOCATION</Title>
+                <LeftPanel>
+                    <CharacterImage
+                        src={characterInfos.image}
+                        alt={characterInfos.name}
+                    />
+                    <CharacterInfo>
+                        <h3>{characterInfos.name}</h3>
+                        <p>{characterInfos.species}</p>
+                    </CharacterInfo>
+                </LeftPanel>
+
+                <RightPanel>
+                    <SectionBlock>
+                        <SectionTitle>About</SectionTitle>
+                        <AboutText>
+                            {characterInfos.name} is a{" "}
+                            {characterInfos.gender?.toLowerCase()}{" "}
+                            {characterInfos.species?.toLowerCase()}. {statusText}
+                            {characterInfos.latest_air_date && (
+                                <> Last seen in {characterInfos.latest_air_date}.</>
+                            )}
+                        </AboutText>
+                    </SectionBlock>
+
+                    <SectionBlock>
+                        <SectionTitle>Origin</SectionTitle>
                         <TypeInfo>{characterInfos.origin?.type || "Unknown"}</TypeInfo>
-                        <LocationInfo>{characterInfos.origin?.name || "Unknown"}</LocationInfo>
-                        <TextInfo>{characterInfos.origin?.dimension || "Unkown"}</TextInfo>
+                        <LocationName>
+                            {characterInfos.origin?.name || "Unknown"}
+                        </LocationName>
+                        <DimensionInfo>
+                            {characterInfos.origin?.dimension || "Unknown"}
+                        </DimensionInfo>
                         <ResidentsInfo>
-                            {characterInfos.origin?.residents_count ?? "N/A"} Residents
+                            {characterInfos.origin?.residents_count ?? "N/A"} residents
                         </ResidentsInfo>
-                    </div>
+                    </SectionBlock>
+
+                    <SectionBlock>
+                        <SectionTitle>Location</SectionTitle>
+                        <TypeInfo>{characterInfos.location?.type || "Unknown"}</TypeInfo>
+                        <LocationName>
+                            {characterInfos.location?.name || "Unknown"}
+                        </LocationName>
+                        <DimensionInfo>
+                            {characterInfos.location?.dimension || "Unknown"}
+                        </DimensionInfo>
+                        <ResidentsInfo>
+                            {characterInfos.location?.residents_count ?? "N/A"} residents
+                        </ResidentsInfo>
+                    </SectionBlock>
                 </RightPanel>
             </ModalContent>
         </ModalOverlay>
-    )
-}
+    );
+};
