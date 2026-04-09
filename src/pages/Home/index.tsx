@@ -6,7 +6,7 @@ import { Card } from "../../components/header/Card"
 import Loading from "../../components/Loading"
 import { Pagination } from "../../components/Pagination"
 import { CharacterModal } from "../../components/Modal"
-import type { CharacterData } from "../../types/Character"
+// import type { CharacterData } from "../../types/Character"
 
 
 interface Character {
@@ -78,7 +78,9 @@ export const Home: React.FC = () => {
     try {
       const timerPromise = new Promise(resolve => setTimeout(resolve, 2000));
 
-      const fetchPromise = fetch(`http://localhost:5001/character?name=${searchInput}&page=${page}`)
+      const apiUrl = process.env.VITE_API_URL;
+
+      const fetchPromise = fetch(`${apiUrl}/character?name=${searchInput}&page=${page}`)
         .catch(err => {
           console.error("Erro na API:", err);
           return null;

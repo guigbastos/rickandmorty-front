@@ -73,7 +73,6 @@ export const SearchInput = styled.input`
 	&::placeholder {
 		color: #9f9f9f;
 		line-height: 1.6rem;
-		padding-left: 1.6rem;
 	}
 
 	@media (max-width: 768px) {

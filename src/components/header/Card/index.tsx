@@ -18,13 +18,13 @@ interface CardProps {
 export const Card: React.FC<CardProps> = ({
 	imageUrl,
 	name,
-	gender,
+	// gender,
 	species,
 	status,
-	type,
-	origin,
-	location,
-	episode,
+	// type,
+	// origin,
+	// location,
+	// episode,
 	isSelected,
 	onClick,
 }: CardProps) => {
