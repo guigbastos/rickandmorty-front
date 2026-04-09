@@ -1,16 +1,20 @@
-import type { Location } from "./location";
+import type { Location } from "./Location.ts";
 
 export interface Character {
-    id: number;
-    name: string;
-    status: string;
-    species: string;
-    gender: string;
-    image: string;
+  id: number;
+  name: string;
+  status: string;
+  species: string;
+  gender: string;
+  image: string;
 }
 
 export interface CharacterData extends Character, Location {
-    origin: Location;
-    location: Location;
-    latest_air_date: string;
+  character_origin: Location;
+  character_location: Location;
+  last_episode?: {
+    name: string;
+    episode: string;
+    air_date: string;
+  };
 }

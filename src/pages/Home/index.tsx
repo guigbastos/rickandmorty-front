@@ -1,11 +1,12 @@
+import { PageWrapper, HomeContainer, Logo, SearchBox, SearchInput, ResultsGrid } from "./styles"; 
+import logo from "../../assets/logo.svg";
 import { Button } from "../../components/header/button"
-import "./styles.css"
 import { useState, type ChangeEvent } from "react"
 import { Card } from "../../components/header/Card"
 import Loading from "../../components/Loading"
 import { Pagination } from "../../components/Pagination"
 import { CharacterModal } from "../../components/Modal"
-import type { CharacterData } from "../../types/character"
+import type { CharacterData } from "../../types/Character"
 
 
 interface Character {
@@ -17,16 +18,21 @@ interface Character {
   gender: string;
   character_origin: {
     name: string;
+    type?: string;
     dimension?: string;
+    residents_count?: number;
   } | null;
   character_location: {
     name: string;
+    type?: string;
     dimension?: string;
+    residents_count?: number;
   } | null;
   image: string;
   last_episode?: {
     name: string;
     episode: string;
+    air_date: string;
   }
 }
 
@@ -115,66 +121,63 @@ export const Home: React.FC = () => {
   }
 
   return (
-    <>
-      {isLoading && <Loading />}
+    <PageWrapper>
+      <HomeContainer>
+        {isLoading && <Loading />}
 
+        <Logo src={logo} alt="Logo" draggable={false} />
+
+        <SearchBox>
+          <SearchInput
+            onChange={onSearchInputChanged}
+            onKeyDown={handleKeyDown}
+            value={searchInput}
+            type="search"
+            placeholder="Search characters"
+          />
+          <div>
+            <Button text="Search" link="#"/>
+          </div>
+        </SearchBox>
+
+        {hasResults && (
+          <ResultsGrid>
+            {characters.length > 0 ? (
+              characters.map((char) => (
+                <Card
+                  key={char.id}
+                  name={char.name}
+                  status={char.status}
+                  species={char.species}
+                  type={char.type}
+                  gender={char.gender}
+                  imageUrl={char.image}
+                  origin={char.character_origin?.name || "Unknown"}
+                  location={char.character_location?.name || "Unknown"}
+                  episode={char.last_episode ? [char.last_episode.name] : []}
+                  isSelected={selectedCharacter?.id === char.id}
+                  onClick={() => handleCardClick(char)}
+                />
+              ))
+            ) : (
+              <p style={{color: 'white'}}>Nenhum personagem encontrado.</p>
+            )}
+          </ResultsGrid>
+        )}
+        {characters.length > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(page) => handleSearch(page)}
+          />
+        )}
+      </HomeContainer>
       <CharacterModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         characterInfos={selectedCharacter as any}
       />
-
-      <div className="home-container">
-
-      <img src="./src/assets/logo.svg" alt="" draggable={false} className="logo"/>
-
-      <div className="search-box">
-      <input onChange={onSearchInputChanged} onKeyDown={handleKeyDown} value={searchInput} type="search" className="search-input" placeholder="Search characters" />
-      <div onClick={() => handleSearch(1)}>
-        <Button text="Search" link="#"/>
-      </div>
-      </div>
-
-      {hasResults && (
-        <div className="results-grid">
-          {characters.length > 0 ? (
-            characters.map((char) => (
-              <Card
-              key={char.id}
-              name={char.name}
-              status={char.status}
-              species={char.species}
-              type={char.type}
-              gender={char.gender}
-              imageUrl={char.image}
-              origin={char.character_origin?.name || "Unknown"}
-              location={char.character_location?.name || "Unknown"}
-              episode={char.last_episode ? [char.last_episode.name] : []}
-              isSelected={selectedCharacter?.id === char.id}
-              // onClick={() => setSelectedCharacter(char)}
-              onClick={() => handleCardClick(char)}
-              />
-            ))
-          ) : (
-            <p>Nenhum personagem encontrado.</p>
-          )}
-        </div>
-      )}
-
-      {characters.length > 0 && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={(page) => handleSearch(page)}
-        />
-      )}
-
-      {/* {hasResults && !isLoading && (
-        <div style={{marginTop:20, color: 'white'}}>
-        </div>
-      )}  */}
-      </div>
-    </>
+    </PageWrapper>
   )
 }
 
