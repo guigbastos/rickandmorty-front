@@ -78,7 +78,7 @@ export const Home: React.FC = () => {
     try {
       const timerPromise = new Promise(resolve => setTimeout(resolve, 2000));
 
-      const apiUrl = process.env.VITE_API_URL;
+      const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:5001'
 
       const fetchPromise = fetch(`${apiUrl}/character?name=${searchInput}&page=${page}`)
         .catch(err => {
